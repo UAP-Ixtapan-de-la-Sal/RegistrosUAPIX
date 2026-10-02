@@ -1,3 +1,4 @@
+
 from django.shortcuts import render, redirect
 from .models import Trabajador
 
@@ -18,3 +19,13 @@ def registrar_trabajador(request):
     
     # Si la petición es GET, solo mostramos la plantilla HTML del formulario
     return render(request, 'inicio/registro_trabajador.html')
+from django.shortcuts import render
+#from django.http import HttpResponse
+
+#def inicio(request):
+    #return HttpResponse("¡Bienvenido Chilly Willy!")
+
+def inicio(request):
+    # Reemplaza 'inicio/index.html' con el nombre de la plantilla que vayas a usar
+    return render(request, 'inicio/index.html') 
+
