@@ -2,6 +2,6 @@ from django.shortcuts import render
 from django.http import HttpResponse
 
 def inicio(request):
-    return HttpResponse("¡Bienvenido Chilly Willy!")
+    return HttpResponse("¡Hola, mundo!")
 
 # Create your views here.
