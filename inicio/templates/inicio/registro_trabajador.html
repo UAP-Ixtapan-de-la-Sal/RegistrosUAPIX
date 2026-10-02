@@ -1,0 +1,39 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Registro de trabajadores</title>
+    <link rel="stylesheet" href="{% static 'inicio/css/styles.css' %}">
+</head>
+<body>
+    <main class="page-shell">
+        <section class="form-panel" aria-labelledby="page-title">
+            <div class="eyebrow">REGISTROS UAPIX</div>
+            <h1 id="page-title">Alta de trabajador</h1>
+            <p class="intro">Ingresa los datos del trabajador para guardarlos en el registro.</p>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="notice" role="status">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %} <!-- ¡Muy importante en Django para formularios POST! -->
+    
+                <label for="nombre">Nombre:</label>
+                <input type="text" name="nombre" id="nombre" required>
+
+                 <label for="cargo">Cargo:</label>
+                <input type="text" name="cargo" id="cargo" required>
+
+                <button type="submit">Registrar Trabajador</button>
+             
+                <button type="submit">Guardar trabajador</button>
+            </form>
+        </section>
+    </main>
+</body>
+</html>
