@@ -1,7 +1,17 @@
-from django.shortcuts import render
-from django.http import HttpResponse
+from django.contrib import messages
+from django.shortcuts import redirect, render
 
-def inicio(request):
-    return HttpResponse("¡Bienvenido Chilly Willy!")
+from .forms import TrabajadorForm
 
-# Create your views here.
+
+def registrar_trabajador(request):
+    if request.method == 'POST':
+        form = TrabajadorForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Trabajador registrado correctamente.')
+            return redirect('registrar_trabajador')
+    else:
+        form = TrabajadorForm()
+
+    return render(request, 'inicio/registro_trabajador.html', {'form': form})
