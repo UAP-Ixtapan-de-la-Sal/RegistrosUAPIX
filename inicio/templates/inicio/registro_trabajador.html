@@ -21,8 +21,16 @@
             {% endif %}
 
             <form method="post">
-                {% csrf_token %}
-                {{ form.as_p }}
+                {% csrf_token %} <!-- ¡Muy importante en Django para formularios POST! -->
+    
+                <label for="nombre">Nombre:</label>
+                <input type="text" name="nombre" id="nombre" required>
+
+                 <label for="cargo">Cargo:</label>
+                <input type="text" name="cargo" id="cargo" required>
+
+                <button type="submit">Registrar Trabajador</button>
+             
                 <button type="submit">Guardar trabajador</button>
             </form>
         </section>
