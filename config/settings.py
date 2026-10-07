@@ -130,3 +130,6 @@ MAILERS = {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
 }
+
+# Actualiza la sesión en cada petición para que los 60 segundos sean de INACTIVIDAD REAL
+SESSION_SAVE_EVERY_REQUEST = True
