@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Inicio | Portal de gestión</title>
+	<style>
+		* { box-sizing: border-box; }
+		body { min-height: 100vh; margin: 0; display: flex; flex-direction: column; font-family: Arial, sans-serif; color: #1f2937; background: #f3f6fb; }
+		header { position: relative; min-height: 76px; padding: 16px 5%; display: flex; align-items: center; justify-content: flex-end; color: #fff; background: #17365d; }
+		header h1 { position: absolute; left: 50%; margin: 0; transform: translateX(-50%); font-size: 1.4rem; text-align: center; }
+		.user-links { display: flex; gap: 20px; }
+		.user-links a { color: #fff; text-decoration: none; }
+		.user-links a:hover, .user-links a:focus { text-decoration: underline; }
+		main { width: min(1100px, 90%); margin: 48px auto; flex: 1; }
+		main h2 { margin: 0 0 24px; text-align: center; }
+		.modules { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+		.module { min-height: 120px; padding: 20px; display: flex; align-items: center; justify-content: center; border-radius: 10px; color: #fff; background: #2563a6; box-shadow: 0 4px 12px rgb(0 0 0 / 10%); font-size: 1.1rem; font-weight: bold; text-align: center; text-decoration: none; transition: background .2s, transform .2s; }
+		.module:hover, .module:focus { background: #174b80; transform: translateY(-3px); }
+		footer { padding: 22px 5%; color: #fff; background: #17365d; text-align: center; line-height: 1.6; }
+		footer p { margin: 3px 0; }
+		@media (max-width: 600px) {
+			header { justify-content: center; padding-top: 66px; }
+			header h1 { top: 14px; width: 100%; font-size: 1.2rem; }
+			.user-links { gap: 16px; }
+			main { margin: 32px auto; }
+		}
+	</style>
+</head>
+<body>
+	<header>
+		<h1>Portal de gestión</h1>
+		<nav class="user-links" aria-label="Opciones de usuario">
+			<a href="/usuarios/">Administrar usuarios</a>
+			<a href="{% url 'login' %}">Cerrar sesión</a>
+		</nav>
+	</header>
+
+	<main>
+		<h2>Módulos disponibles</h2>
+		<nav class="modules" aria-label="Módulos del portal">
+			<a class="module" href="/modulo-1/">Módulo de prueba 1</a>
+			<a class="module" href="/modulo-2/">Módulo de prueba 2</a>
+			<a class="module" href="/modulo-3/">Módulo de prueba 3</a>
+			<a class="module" href="/modulo-4/">Módulo de prueba 4</a>
+			<a class="module" href="/modulo-5/">Módulo de prueba 5</a>
+			<a class="module" href="/modulo-6/">Módulo de prueba 6</a>
+			<a class="module" href="/modulo-7/">Módulo de prueba 7</a>
+		</nav>
+	</main>
+
+	<footer>
+		<p>Contacto: contacto@ejemplo.com</p>
+		<p>Teléfono: +00 000 000 0000 · Dirección: Calle Principal 123, Ciudad</p>
+	</footer>
+</body>
+</html>
