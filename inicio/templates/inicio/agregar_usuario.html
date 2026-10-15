@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Agregar Nuevo Usuario</title>
+    <style>
+        body { 
+            background: #f3f6fb; 
+            font-family: Arial, sans-serif; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
+        }
+        .card { 
+            background: #fff; 
+            width: 700px; 
+            padding: 30px; 
+            border: 1px solid #ccc; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+            position: relative; 
+        }
+        .btn-cerrar { 
+            position: absolute; 
+            top: 20px; 
+            right: 20px; 
+            border: 1px solid #000; 
+            background: #fff; 
+            font-weight: bold; 
+            cursor: pointer; 
+            padding: 2px 6px; 
+            text-decoration: none;
+            color: #000;
+        }
+        h2 { 
+            text-align: center; 
+            margin-top: 0; 
+            font-size: 1.2rem;
+            text-transform: uppercase;
+        }
+        hr { border: 0; border-top: 1px solid #ccc; margin: 20px 0; }
+        
+        .form-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 40px; 
+        }
+        .col-left, .col-right { display: flex; flex-direction: column; gap: 15px; }
+        
+        label { font-weight: bold; font-size: 0.9rem; color: #333; display: flex; align-items: center; gap: 5px; }
+        input[type="text"], input[type="password"], select { 
+            width: 100%; 
+            padding: 8px; 
+            border: 1px solid #999; 
+        }
+        
+        .modulos-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 15px; 
+            margin-top: 10px; 
+        }
+        .checkbox-item { 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            font-size: 0.85rem; 
+            color: #555; 
+        }
+        
+        .btn-submit { 
+            display: block; 
+            margin: 30px auto 0; 
+            padding: 10px 40px; 
+            background: #fff; 
+            border: 1px solid #000; 
+            font-weight: bold; 
+            font-size: 1rem; 
+            cursor: pointer; 
+            text-transform: uppercase;
+        }
+        .btn-submit:hover { background: #eee; }
+
+        .admin-link-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .admin-link {
+            color: #17365d;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+        .admin-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <!-- El botón X de la esquina superior regresa al homePage -->
+        <a href="{% url 'homePage' %}" class="btn-cerrar">X</a>
+        
+        <h2>Agregar Nuevo Usuario</h2>
+        <hr>
+
+        <!-- El formulario usa el método POST para enviar datos de forma segura -->
+        <form method="POST">
+            {% csrf_token %}
+            
+            <div class="form-grid">
+                <!-- Columna Izquierda: Credenciales -->
+                <div class="col-left">
+                    <div>
+                        <label>👤 Nombre de Usuario:</label>
+                        {{ form.username }}
+                    </div>
+                    <div>
+                        <label>🔒 Contraseña:</label>
+                        {{ form.password }}
+                    </div>
+                    <div>
+                        <label>⚙️ Tipo de Rol:</label>
+                        {{ form.rol }}
+                    </div>
+                </div>
+
+                <!-- Columna Derecha: Asignación de Módulos -->
+                <div class="col-right">
+                    <label>ASIGNAR MODULOS</label>
+                    <div class="modulos-grid">
+                        <div class="checkbox-item">{{ form.mod_sala_computo }} Sala de Cómputo</div>
+                        <div class="checkbox-item">{{ form.mod_prestamos }} Préstamos y Devolución</div>
+                        <div class="checkbox-item">{{ form.mod_auto_acceso }} Auto Acceso</div>
+                        <div class="checkbox-item">{{ form.mod_insumos }} Control de Insumos</div>
+                        <div class="checkbox-item">{{ form.mod_biblioteca }} Biblioteca Digital</div>
+                        <div class="checkbox-item">{{ form.mod_tecnologicos }} Insumos Tecnológicos</div>
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+            <button type="submit" class="btn-submit">Agregar</button>
+        </form>
+
+        <!-- Enlace directo al panel azul de Django -->
+        <div class="admin-link-container">
+            <a href="{% url 'admin:index' %}" class="admin-link" target="_blank">
+                Ir al Panel de Administración Avanzado (Modificar/Eliminar) ➜
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>

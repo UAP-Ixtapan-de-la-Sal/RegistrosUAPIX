@@ -38,6 +38,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -133,3 +134,43 @@ MAILERS = {
 
 # Actualiza la sesión en cada petición para que los 60 segundos sean de INACTIVIDAD REAL
 SESSION_SAVE_EVERY_REQUEST = True
+
+AUTH_USER_MODEL = 'inicio.UsuarioSistema'
+
+# ==========================================
+# CONFIGURACIÓN DE LA INTERFAZ GRÁFICA (JAZZMIN)
+# ==========================================
+JAZZMIN_SETTINGS = {
+    # Título de la pestaña del navegador
+    "site_title": "Admin UAPIX",
+
+    # Título en la pantalla de inicio de sesión
+    "site_header": "UAPIX Admin",
+
+    # Título en la barra lateral superior
+    "site_brand": "Sistema UAPIX",
+
+    # Logo opcional (puedes colocar la ruta de tu logo en static/img/logo.png)
+    # "site_logo": "img/logo.png",
+
+    # Texto de bienvenida en el login
+    "welcome_sign": "Bienvenido al Sistema de Gestión UAPIX",
+
+    # Copyright al pie de página
+    "copyright": "TESVG - Registros UAPIX",
+
+    # Habilitar barra lateral y menú desplegable limpio
+    "show_sidebar": True,
+    "navigation_expanded": True,
+
+    # Iconos para los modelos en la barra lateral (usa FontAwesome)
+    "icons": {
+        "auth.group": "fas fa-users-cog",
+        "inicio.usuariosistema": "fas fa-user-shield",
+        "inicio.persona": "fas fa-users",
+    },
+
+    # Tema visual (puedes probar 'cerulean', 'cosmo', 'flatly', 'journal', 'slate', etc.)
+    "theme": "flatly",
+    "dark_mode_theme": "slate",
+}
