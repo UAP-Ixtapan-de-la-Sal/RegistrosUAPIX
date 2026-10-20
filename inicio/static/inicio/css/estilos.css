@@ -34,6 +34,81 @@ body {
     background-attachment: fixed;
 }
 
+.home-splash {
+    position: fixed;
+    inset: 0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+    background: linear-gradient(135deg, var(--color-green), var(--color-green-hover));
+    color: #fff;
+    z-index: 9999;
+    transition: opacity 0.5s ease;
+}
+
+.home-splash.is-leaving {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.home-splash .splash-content {
+    text-align: center;
+    animation: home-splash-appear 0.6s ease-out both;
+}
+
+.home-splash-animation {
+    display: block;
+    width: min(560px, 88vw);
+    max-height: 62vh;
+    object-fit: contain;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 12px 32px rgba(17, 24, 39, 0.12);
+    margin: 0 auto 20px;
+}
+
+.home-splash h2 {
+    margin: 0;
+    color: #fff;
+    font-size: clamp(1.1rem, 3vw, 1.6rem);
+}
+
+.home-section-title {
+    margin-bottom: 24px;
+    color: var(--color-green);
+}
+
+.home-bottom-branding {
+    width: 100%;
+    margin-top: 30px;
+}
+
+.home-bottom-branding .divider-line {
+    margin-bottom: 10px;
+}
+
+@keyframes home-splash-appear {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .home-splash,
+    .home-splash .splash-content {
+        animation: none;
+        transition: none;
+    }
+}
 
 /* ==========================================================================
    2. HEADER SUPERIOR INSTITUCIONAL
@@ -171,6 +246,299 @@ body {
     z-index: 2;
     position: relative;
     padding: clamp(12px, 2vw, 28px);
+}
+
+.audit-container {
+    justify-content: flex-start;
+    padding-top: clamp(24px, 5vh, 56px);
+    padding-bottom: 28px;
+    gap: 20px;
+}
+
+.audit-title {
+    width: 100%;
+    margin: 0;
+    color: var(--color-green-hover);
+    font-size: clamp(1.25rem, 2.4vw, 1.8rem);
+    line-height: 1.25;
+    text-align: center;
+}
+
+.audit-logo {
+    height: 50px;
+    width: auto;
+}
+
+.audit-body .audit-footer-flor {
+    height: 40px;
+    width: auto;
+}
+
+.audit-card-panel {
+    width: min(1120px, 100%);
+    padding: clamp(16px, 2.5vw, 28px);
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid rgba(82, 104, 85, 0.14);
+    border-top: 4px solid var(--color-gold);
+    border-radius: 16px;
+    box-shadow: 0 12px 32px rgba(17, 24, 39, 0.12);
+    position: relative;
+    z-index: 3;
+}
+
+.filters-row {
+    display: flex;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.filter-group label {
+    color: var(--color-green-hover);
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.035em;
+    text-transform: uppercase;
+}
+
+.audit-select,
+.audit-input {
+    min-height: 42px;
+    padding: 9px 12px;
+    color: var(--text-main);
+    background: #fff;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font: inherit;
+}
+
+.audit-select {
+    min-width: 220px;
+}
+
+.audit-select:focus,
+.audit-input:focus {
+    border-color: var(--color-green);
+    outline: 3px solid rgba(82, 104, 85, 0.14);
+}
+
+.date-filter-container {
+    position: relative;
+    z-index: 5;
+}
+
+.input-calendar-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.input-calendar-wrapper .audit-input {
+    width: 260px;
+    padding-right: 42px;
+    cursor: pointer;
+}
+
+.calendar-icon-trigger {
+    position: absolute;
+    right: 14px;
+    color: var(--color-green);
+    pointer-events: none;
+}
+
+.date-dropdown-panel {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    z-index: 1300;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    width: max-content;
+    max-width: calc(100vw - 32px);
+    padding: 14px;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    box-shadow: 0 16px 38px rgba(15, 23, 42, 0.2);
+}
+
+.date-dropdown-panel.is-hidden {
+    display: none;
+}
+
+.date-quick-options {
+    display: flex;
+    flex: 0 0 160px;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.quick-option-btn {
+    padding: 9px 10px;
+    color: var(--text-main);
+    background: transparent;
+    border: 0;
+    border-radius: 7px;
+    font: inherit;
+    font-size: 0.85rem;
+    text-align: left;
+    cursor: pointer;
+}
+
+.quick-option-btn:hover,
+.quick-option-btn.active {
+    color: var(--color-green-hover);
+    background: rgba(82, 104, 85, 0.12);
+    font-weight: 700;
+}
+
+.date-calendar-view {
+    flex: 0 0 620px;
+    width: 620px;
+    min-width: 620px;
+}
+
+.date-calendar-view .flatpickr-calendar.inline {
+    width: 620px !important;
+    max-width: none;
+    border: 0;
+    box-shadow: none;
+}
+
+.date-calendar-view .flatpickr-innerContainer,
+.date-calendar-view .flatpickr-rContainer,
+.date-calendar-view .flatpickr-weekdays,
+.date-calendar-view .flatpickr-days {
+    width: 618px !important;
+}
+
+.date-calendar-view .dayContainer {
+    flex: 0 0 50% !important;
+    width: 50% !important;
+    min-width: 50% !important;
+    max-width: 50% !important;
+}
+
+.date-calendar-view .flatpickr-months {
+    align-items: center;
+    padding-bottom: 4px;
+}
+
+.date-calendar-view .flatpickr-current-month,
+.date-calendar-view .flatpickr-weekday {
+    color: var(--color-green-hover);
+    font-weight: 700;
+}
+
+.date-calendar-view .flatpickr-day.selected,
+.date-calendar-view .flatpickr-day.startRange,
+.date-calendar-view .flatpickr-day.endRange,
+.date-calendar-view .flatpickr-day.selected:hover,
+.date-calendar-view .flatpickr-day.startRange:hover,
+.date-calendar-view .flatpickr-day.endRange:hover {
+    background: var(--color-green);
+    border-color: var(--color-green);
+}
+
+.filter-actions {
+    display: flex;
+    align-items: flex-end;
+}
+
+.btn-action-audit,
+.btn-export {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 42px;
+    padding: 10px 16px;
+    border: 0;
+    border-radius: 8px;
+    color: #fff;
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.btn-action-audit {
+    background: var(--color-green);
+}
+
+.btn-action-audit:hover {
+    background: var(--color-green-hover);
+    transform: translateY(-1px);
+}
+
+.audit-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+}
+
+.audit-table {
+    width: 100%;
+    min-width: 720px;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.audit-table th,
+.audit-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid #e8edf2;
+    vertical-align: middle;
+}
+
+.audit-table th {
+    color: var(--color-green-hover);
+    background: #f1f5f2;
+    font-size: 0.76rem;
+    letter-spacing: 0.035em;
+}
+
+.audit-table td {
+    color: #334155;
+    font-size: 0.88rem;
+}
+
+.audit-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.export-buttons-row {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 28px;
+    padding-top: 18px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.btn-export.excel {
+    background: #217346;
+}
+
+.btn-export.pdf {
+    background: #b42318;
+}
+
+.btn-export:hover {
+    filter: brightness(0.92);
+    transform: translateY(-1px);
 }
 
 .header-branding {
@@ -343,6 +711,63 @@ body {
 @media (max-width: 600px) {
     .main-container {
         padding: 16px;
+    }
+
+    .audit-container {
+        padding: 24px 12px;
+    }
+
+    .audit-card-panel {
+        padding: 16px 12px;
+    }
+
+    .filters-row,
+    .filter-group,
+    .filter-actions,
+    .audit-select,
+    .input-calendar-wrapper,
+    .input-calendar-wrapper .audit-input {
+        width: 100%;
+    }
+
+    .filter-actions .btn-action-audit {
+        width: 100%;
+    }
+
+    .date-dropdown-panel {
+        right: 0;
+        left: auto;
+        flex-direction: column;
+        width: min(100vw - 24px, 520px);
+        max-height: min(72vh, 620px);
+        overflow: auto;
+    }
+
+    .date-quick-options {
+        flex: 0 0 auto;
+        flex-direction: row;
+        flex-wrap: wrap;
+        width: 100%;
+    }
+
+    .quick-option-btn {
+        flex: 1 1 42%;
+        text-align: center;
+    }
+
+    .date-calendar-view {
+        flex: 0 0 auto;
+        width: 100%;
+        min-width: 0;
+        overflow-x: auto;
+    }
+
+    .export-buttons-row {
+        justify-content: stretch;
+    }
+
+    .export-buttons-row .btn-export {
+        flex: 1 1 100%;
     }
 
     .bento-grid {
@@ -562,4 +987,28 @@ body {
     font-size: 0.85rem;
     text-align: center;
     font-weight: 500;
+}
+
+
+/* /*ESTILOS PARA ADITORIA/ */
+.audit-body {
+    background-image:
+        linear-gradient(rgba(248, 250, 252, 0.72), rgba(248, 250, 252, 0.72)),
+        url('../images/fondo-panal.png');
+}
+
+.btn-action-audit {
+transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-action-audit:hover {
+background-color: #d4af37;
+color: #3b2a00;
+box-shadow: 0 0 12px rgba(212, 175, 55, 0.7);
+animation: audit-gold-glow 0.8s ease-in-out infinite alternate;
+}
+
+ @keyframes audit-gold-glow {
+from { box-shadow: 0 0 5px rgba(212, 175, 55, 0.35); }
+to { box-shadow: 0 0 16px rgba(251, 246, 228, 0.9); }
 }
