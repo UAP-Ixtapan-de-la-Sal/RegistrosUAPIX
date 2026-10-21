@@ -1012,3 +1012,293 @@ animation: audit-gold-glow 0.8s ease-in-out infinite alternate;
 from { box-shadow: 0 0 5px rgba(212, 175, 55, 0.35); }
 to { box-shadow: 0 0 16px rgba(251, 246, 228, 0.9); }
 }
+
+
+/* ==========================================================================
+   8. VISTA DE AGREGAR USUARIO
+   ========================================================================== */
+/* 1. Ocultar botones del header solo en esta vista */
+.add-user-view .user-links { display: none !important; }
+
+/* 2. Limpieza del fondo para destacar la tarjeta */
+body.add-user-view {
+    background-image: none !important;
+    background-color: var(--bg-page) !important;
+}
+
+/* 3. Contenedor central principal */
+.add-user-view .center-wrapper {
+    flex: 1; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    padding: 40px 20px;
+}
+
+/* 4. Tarjeta Principal */
+.add-user-view .card { 
+    background: var(--card-bg); 
+    width: 100%; 
+    max-width: 900px; 
+    padding: 40px 50px;
+    border-radius: 16px; 
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05); 
+    position: relative; 
+    border: 1px solid rgba(82, 104, 85, 0.1);
+    border-top: 4px solid var(--color-green);
+}
+
+/* Botón Cerrar (X) */
+.add-user-view .btn-cerrar { 
+    position: absolute; 
+    top: 25px; 
+    right: 25px; 
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    background: transparent; 
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold; 
+    font-size: 1.2rem;
+    cursor: pointer; 
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+.add-user-view .btn-cerrar:hover {
+    background: #f1f5f9;
+    color: #dc2626;
+}
+
+/* Título Principal */
+.add-user-view h2 { 
+    text-align: center;
+    margin: 0 0 30px 0; 
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--text-main); 
+    text-transform: uppercase;
+}
+
+/* ----- MENSAJES DE ÉXITO (DJANGO) ----- */
+.add-user-view .messages-container {
+    margin-bottom: 25px;
+    width: 100%;
+}
+.add-user-view .alert {
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+.add-user-view .alert-success {
+    background-color: #dcfce7;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+}
+.add-user-view .alert-error {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+/* ----- ESTRUCTURA BALANCEADA: 2 CAJAS ----- */
+.add-user-view .form-grid { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr;
+    gap: 30px; 
+}
+
+.add-user-view .section-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 30px 25px;
+    display: flex;
+    flex-direction: column;
+    height: 100%; 
+}
+
+.add-user-view .section-title {
+    text-align: center;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-green);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid rgba(82, 104, 85, 0.1);
+}
+
+.add-user-view .input-group { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 20px; 
+}
+
+.add-user-view .input-box {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.add-user-view .input-box label { 
+    font-weight: 600; 
+    font-size: 0.85rem; 
+    color: var(--text-main); 
+}
+
+.add-user-view .password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.add-user-view input[type="text"], 
+.add-user-view input[type="password"], 
+.add-user-view select { 
+    width: 100%; 
+    padding: 12px 14px; 
+    border-radius: 8px;
+    border: 1px solid #cbd5e1; 
+    background-color: #ffffff;
+    color: var(--text-main);
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+.add-user-view select option {
+    background-color: #ffffff;
+    color: var(--text-main);
+    padding: 10px;
+    font-size: 0.95rem;
+}
+
+.add-user-view select option:checked,
+.add-user-view select option:hover,
+.add-user-view select:focus > option:checked {
+    background-color: var(--color-green) !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 10px 100px var(--color-green) inset !important;
+}
+
+.add-user-view .password-wrapper input[type="password"],
+.add-user-view .password-wrapper input[type="text"] {
+    padding-right: 45px; 
+}
+
+.add-user-view .toggle-password {
+    position: absolute;
+    right: 15px;
+    cursor: pointer;
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+}
+
+.add-user-view .toggle-password:hover {
+    color: var(--color-green);
+}
+
+.add-user-view .toggle-password svg {
+    width: 20px; height: 20px;
+}
+
+.add-user-view input[type="text"]:focus, 
+.add-user-view input[type="password"]:focus, 
+.add-user-view select:focus {
+    border-color: var(--color-green);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(82, 104, 85, 0.15);
+}
+
+.add-user-view .modules-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.add-user-view .checkbox-card { 
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
+    padding: 12px 10px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    justify-content: flex-start;
+}
+
+.add-user-view .checkbox-card:hover {
+    border-color: var(--color-green);
+    box-shadow: 0 2px 6px rgba(82, 104, 85, 0.1);
+}
+
+.add-user-view .checkbox-card input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: var(--color-green); 
+    margin: 0;
+    flex-shrink: 0;
+}
+
+.add-user-view .checkbox-card span {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-main);
+    line-height: 1.2;
+}
+
+.add-user-view hr { border: 0; border-top: 1px solid #e2e8f0; margin: 35px 0 25px; }
+
+.add-user-view .form-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.add-user-view .btn-submit { 
+    padding: 15px 55px; 
+    background: var(--color-green);
+    color: #ffffff;
+    border: none; 
+    border-radius: 8px;
+    font-weight: 700; 
+    font-size: 1rem; 
+    cursor: pointer; 
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 12px rgba(82, 104, 85, 0.25);
+    transition: all 0.3s ease;
+}
+
+.add-user-view .btn-submit:hover { 
+    background: var(--color-green-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(82, 104, 85, 0.35);
+}
+
+.add-user-view .admin-link {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: color 0.2s ease;
+}
+
+.add-user-view .admin-link:hover { color: var(--color-gold); text-decoration: underline; }
