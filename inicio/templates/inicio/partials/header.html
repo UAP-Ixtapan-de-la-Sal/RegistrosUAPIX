@@ -1,6 +1,6 @@
 {% load static %}
 <header class="institutional-header">
-    <div style="font-weight: 700; font-size: 1.1rem; color: #fff;">PORTAL DE GESTION UAPIX</div>
+    <div style="font-weight: 700; font-size: 1.1rem; color: #fff;">PORTAL DE GESTIÓN UAPIX</div>
     
     <div class="user-links" style="display: flex; gap: 16px; align-items: center; position: relative;">
         <!-- Menú desplegable limpio solo para el Superusuario -->
@@ -15,11 +15,11 @@
                         <span class="dropdown-icon">👥</span>
                         <span class="dropdown-text">Gestión de Usuarios</span>
                     </a>
-                    <a href="#" class="dropdown-item">
+                    <a href="{% url 'auditoria_reportes' %}" class="dropdown-item">
                         <span class="dropdown-icon">📊</span>
                         <span class="dropdown-text">Auditoría y Reportes</span>
                     </a>
-                    <a href="#" class="dropdown-item">
+                    <a href="{% url 'respaldos_bd' %}" class="dropdown-item">
                         <span class="dropdown-icon">💾</span>
                         <span class="dropdown-text">Respaldos de BD</span>
                     </a>

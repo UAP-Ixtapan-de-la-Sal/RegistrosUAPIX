@@ -81,3 +81,15 @@ def agregar_usuario_view(request):
 def logout_view(request):
     logout(request)
     return redirect('login')
+
+#6. VISTA DE AUDITORÍA Y REPORTES
+@login_required
+def auditoria_reportes_view(request):
+    # Lógica para la vista de auditoría y reportes
+    return render(request, 'inicio/auditoria_reportes.html')
+
+#7. VISTA DE RESPALDOS DE BASE DE DATOS
+@login_required
+def respaldos_bd_view(request):
+    # Lógica para la vista de respaldos de base de datos
+    return render(request, 'inicio/respaldos_bd.html')
