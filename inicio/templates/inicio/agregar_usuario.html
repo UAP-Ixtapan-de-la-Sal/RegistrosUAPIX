@@ -1,155 +1,441 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <title>Agregar Nuevo Usuario</title>
+    
+    <!-- Enlazamos tu archivo de estilos globales -->
+    <link rel="stylesheet" href="{% static 'inicio/css/estilos.css' %}">
+    
     <style>
-        body { 
-            background: #f3f6fb; 
-            font-family: Arial, sans-serif; 
+        /* 1. Ocultar botones del header solo en esta vista */
+        .user-links { display: none !important; }
+
+        /* 2. Limpieza del fondo para destacar la tarjeta */
+        body {
+            background-image: none !important;
+            background-color: var(--bg-page) !important;
+        }
+
+        /* 3. Contenedor central principal */
+        .center-wrapper {
+            flex: 1; 
             display: flex; 
             justify-content: center; 
             align-items: center; 
-            height: 100vh; 
-            margin: 0; 
+            padding: 40px 20px;
         }
+
+        /* 4. Tarjeta Principal */
         .card { 
-            background: #fff; 
-            width: 700px; 
-            padding: 30px; 
-            border: 1px solid #ccc; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+            background: var(--card-bg); 
+            width: 100%; 
+            max-width: 900px; 
+            padding: 40px 50px;
+            border-radius: 16px; 
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05); 
             position: relative; 
+            border: 1px solid rgba(82, 104, 85, 0.1);
+            border-top: 4px solid var(--color-green);
         }
+
+        /* Botón Cerrar (X) */
         .btn-cerrar { 
             position: absolute; 
-            top: 20px; 
-            right: 20px; 
-            border: 1px solid #000; 
-            background: #fff; 
+            top: 25px; 
+            right: 25px; 
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            background: transparent; 
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-weight: bold; 
-            cursor: pointer; 
-            padding: 2px 6px; 
-            text-decoration: none;
-            color: #000;
-        }
-        h2 { 
-            text-align: center; 
-            margin-top: 0; 
             font-size: 1.2rem;
+            cursor: pointer; 
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        .btn-cerrar:hover {
+            background: #f1f5f9;
+            color: #dc2626;
+        }
+
+        /* Título Principal */
+        h2 { 
+            text-align: center;
+            margin: 0 0 30px 0; 
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--text-main); 
             text-transform: uppercase;
         }
-        hr { border: 0; border-top: 1px solid #ccc; margin: 20px 0; }
-        
+
+        /* ----- MENSAJES DE ÉXITO (DJANGO) ----- */
+        .messages-container {
+            margin-bottom: 25px;
+            width: 100%;
+        }
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        .alert-success {
+            background-color: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+        .alert-error {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        /* ----- ESTRUCTURA BALANCEADA: 2 CAJAS ----- */
         .form-grid { 
             display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            gap: 40px; 
+            grid-template-columns: 1fr 1fr; /* Mitad y mitad exactas */
+            gap: 30px; 
         }
-        .col-left, .col-right { display: flex; flex-direction: column; gap: 15px; }
+
+        /* Cajas individuales para cada sección */
+        .section-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 30px 25px;
+            display: flex;
+            flex-direction: column;
+            height: 100%; 
+        }
+
+        /* Títulos de cada caja centrados */
+        .section-title {
+            text-align: center;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--color-green);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(82, 104, 85, 0.1);
+        }
         
-        label { font-weight: bold; font-size: 0.9rem; color: #333; display: flex; align-items: center; gap: 5px; }
+        .input-group { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 20px; 
+        }
+
+        .input-box {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .input-box label { 
+            font-weight: 600; 
+            font-size: 0.85rem; 
+            color: var(--text-main); 
+        }
+        
+        /* Contenedor relativo para el ojito */
+        .password-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
         input[type="text"], input[type="password"], select { 
             width: 100%; 
-            padding: 8px; 
-            border: 1px solid #999; 
+            padding: 12px 14px; 
+            border-radius: 8px;
+            border: 1px solid #cbd5e1; 
+            background-color: #ffffff;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+
+        /* ----- ESTILOS PERSONALIZADOS PARA EL SELECT ----- */
+        /* Hack para cambiar el fondo azul por defecto del navegador en las opciones */
+        select option {
+            background-color: #ffffff;
+            color: var(--text-main);
+            padding: 10px;
+            font-size: 0.95rem;
         }
         
-        .modulos-grid { 
-            display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            gap: 15px; 
-            margin-top: 10px; 
+        select option:checked,
+        select option:hover,
+        select:focus > option:checked {
+            background-color: var(--color-green) !important;
+            color: #ffffff !important;
+            /* El box-shadow fuerza el color en navegadores basados en WebKit (Chrome/Edge) */
+            box-shadow: 0 0 10px 100px var(--color-green) inset !important;
         }
-        .checkbox-item { 
+
+        /* Espacio para el ícono en la contraseña */
+        .password-wrapper input[type="password"],
+        .password-wrapper input[type="text"] {
+            padding-right: 45px; 
+        }
+
+        /* Ícono del Ojito */
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            cursor: pointer;
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s;
+        }
+        .toggle-password:hover {
+            color: var(--color-green);
+        }
+        .toggle-password svg {
+            width: 20px; height: 20px;
+        }
+        
+        input[type="text"]:focus, input[type="password"]:focus, select:focus {
+            border-color: var(--color-green);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(82, 104, 85, 0.15);
+        }
+        
+        /* Módulos perfectamente cuadrados y centrados */
+        .modules-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .checkbox-card { 
             display: flex; 
             align-items: center; 
-            gap: 8px; 
-            font-size: 0.85rem; 
-            color: #555; 
+            gap: 10px; 
+            padding: 12px 10px;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            justify-content: flex-start;
         }
-        
+
+        .checkbox-card:hover {
+            border-color: var(--color-green);
+            box-shadow: 0 2px 6px rgba(82, 104, 85, 0.1);
+        }
+
+        .checkbox-card input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            accent-color: var(--color-green); 
+            margin: 0;
+            flex-shrink: 0;
+        }
+
+        .checkbox-card span {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-main);
+            line-height: 1.2;
+        }
+
+        hr { border: 0; border-top: 1px solid #e2e8f0; margin: 35px 0 25px; }
+
+        /* Botones Centrales */
+        .form-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
         .btn-submit { 
-            display: block; 
-            margin: 30px auto 0; 
-            padding: 10px 40px; 
-            background: #fff; 
-            border: 1px solid #000; 
-            font-weight: bold; 
+            padding: 15px 55px; 
+            background: var(--color-green);
+            color: #ffffff;
+            border: none; 
+            border-radius: 8px;
+            font-weight: 700; 
             font-size: 1rem; 
             cursor: pointer; 
             text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 12px rgba(82, 104, 85, 0.25);
+            transition: all 0.3s ease;
         }
-        .btn-submit:hover { background: #eee; }
+        
+        .btn-submit:hover { 
+            background: var(--color-green-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(82, 104, 85, 0.35);
+        }
 
-        .admin-link-container {
-            text-align: center;
-            margin-top: 20px;
-        }
         .admin-link {
-            color: #17365d;
+            color: var(--muted);
             text-decoration: none;
             font-size: 0.85rem;
-            font-weight: bold;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: color 0.2s ease;
         }
-        .admin-link:hover { text-decoration: underline; }
+        .admin-link:hover { color: var(--color-gold); text-decoration: underline; }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <!-- El botón X de la esquina superior regresa al homePage -->
-        <a href="{% url 'homePage' %}" class="btn-cerrar">X</a>
-        
-        <h2>Agregar Nuevo Usuario</h2>
-        <hr>
+    <!-- Header -->
+    {% include 'inicio/partials/header.html' %}
 
-        <!-- El formulario usa el método POST para enviar datos de forma segura -->
-        <form method="POST">
-            {% csrf_token %}
+    <div class="center-wrapper">
+        <div class="card">
+            <a href="{% url 'homePage' %}" class="btn-cerrar" title="Cerrar">✕</a>
             
-            <div class="form-grid">
-                <!-- Columna Izquierda: Credenciales -->
-                <div class="col-left">
-                    <div>
-                        <label>👤 Nombre de Usuario:</label>
-                        {{ form.username }}
+            <h2>Agregar Nuevo Usuario</h2>
+
+            <!-- Bloque para mostrar mensajes de éxito/error de Django -->
+            {% if messages %}
+                <div class="messages-container">
+                    {% for message in messages %}
+                        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-success{% endif %}">
+                            ✓ {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            
+            <form method="POST">
+                {% csrf_token %}
+                
+                <div class="form-grid">
+                    
+                    <!-- CAJA 1: CREDENCIALES (Centrada y organizada) -->
+                    <div class="section-box">
+                        <div class="section-title">👤 Datos de Acceso</div>
+                        
+                        <div class="input-group">
+                            <div class="input-box">
+                                <label>Nombre de Usuario</label>
+                                {{ form.username }}
+                            </div>
+
+                            <div class="input-box">
+                                <label>Contraseña</label>
+                                <div class="password-wrapper">
+                                    {{ form.password }}
+                                    <!-- Ojito de contraseña -->
+                                    <span class="toggle-password" id="togglePassword" title="Mostrar contraseña">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="input-box">
+                                <label>Tipo de Rol</label>
+                                {{ form.rol }}
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <label>🔒 Contraseña:</label>
-                        {{ form.password }}
+
+                    <!-- CAJA 2: MÓDULOS (Centrada y organizada) -->
+                    <div class="section-box">
+                        <div class="section-title">⚙️ Asignación de Módulos</div>
+                        
+                        <div class="modules-grid">
+                            <label class="checkbox-card">
+                                {{ form.mod_sala_computo }}
+                                <span>Sala de Cómputo</span>
+                            </label>
+                            <label class="checkbox-card">
+                                {{ form.mod_prestamos }}
+                                <span>Préstamos / Devolución</span>
+                            </label>
+                            <label class="checkbox-card">
+                                {{ form.mod_auto_acceso }}
+                                <span>Auto Acceso</span>
+                            </label>
+                            <label class="checkbox-card">
+                                {{ form.mod_insumos }}
+                                <span>Control Insumos</span>
+                            </label>
+                            <label class="checkbox-card">
+                                {{ form.mod_biblioteca }}
+                                <span>Biblioteca Digital</span>
+                            </label>
+                            <label class="checkbox-card">
+                                {{ form.mod_tecnologicos }}
+                                <span>Insumos Tecn.</span>
+                            </label>
+                        </div>
                     </div>
-                    <div>
-                        <label>⚙️ Tipo de Rol:</label>
-                        {{ form.rol }}
-                    </div>
+
                 </div>
 
-                <!-- Columna Derecha: Asignación de Módulos -->
-                <div class="col-right">
-                    <label>ASIGNAR MODULOS</label>
-                    <div class="modulos-grid">
-                        <div class="checkbox-item">{{ form.mod_sala_computo }} Sala de Cómputo</div>
-                        <div class="checkbox-item">{{ form.mod_prestamos }} Préstamos y Devolución</div>
-                        <div class="checkbox-item">{{ form.mod_auto_acceso }} Auto Acceso</div>
-                        <div class="checkbox-item">{{ form.mod_insumos }} Control de Insumos</div>
-                        <div class="checkbox-item">{{ form.mod_biblioteca }} Biblioteca Digital</div>
-                        <div class="checkbox-item">{{ form.mod_tecnologicos }} Insumos Tecnológicos</div>
-                    </div>
+                <hr>
+
+                <!-- Botones Finales -->
+                <div class="form-actions">
+                    <button type="submit" class="btn-submit">Registrar Usuario</button>
+                    <a href="{% url 'admin:index' %}" class="admin-link" target="_blank">
+                        Ir al Panel de Administración Avanzado <span>→</span>
+                    </a>
                 </div>
-            </div>
+            </form>
 
-            <hr>
-            <button type="submit" class="btn-submit">Agregar</button>
-        </form>
-
-        <!-- Enlace directo al panel azul de Django -->
-        <div class="admin-link-container">
-            <a href="{% url 'admin:index' %}" class="admin-link" target="_blank">
-                Ir al Panel de Administración Avanzado (Modificar/Eliminar) ➜
-            </a>
         </div>
     </div>
+
+    <!-- Footer -->
+    {% include 'inicio/partials/footer.html' %}
+
+    <!-- Script para hacer funcionar el ojito de la contraseña y validación de letras -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 1. Funcionalidad del ojito de contraseña
+            const togglePassword = document.getElementById('togglePassword');
+            const passwordInput = document.querySelector('input[name="password"]');
+
+            if (togglePassword && passwordInput) {
+                togglePassword.addEventListener('click', function () {
+                    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordInput.setAttribute('type', type);
+                    this.style.color = type === 'text' ? 'var(--color-green)' : '#94a3b8';
+                });
+            }
+
+            // 2. Validación de solo letras en el Nombre de Usuario
+            // Asume que el campo de nombre de usuario en Django se llama "username"
+            const usernameInput = document.querySelector('input[name="username"]');
+            
+            if (usernameInput) {
+                usernameInput.addEventListener('input', function() {
+                    // Reemplaza instantáneamente cualquier número o símbolo por nada ('')
+                    // Permite letras mayúsculas, minúsculas, espacios, acentos y la letra ñ
+                    this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+                });
+            }
+        });
+    </script>
 
 </body>
 </html>

@@ -68,7 +68,7 @@ def agregar_usuario_view(request):
         
         if form.is_valid():
             form.save() 
-            messages.success(request, "¡Usuario y permisos guardados exitosamente!")
+            messages.success(request, "¡Usuario y Permisos Guardados Exitosamente!")
             return redirect('agregar_usuario')
         else:
             messages.error(request, "Error al crear el usuario. Verifica los datos ingresados.")
