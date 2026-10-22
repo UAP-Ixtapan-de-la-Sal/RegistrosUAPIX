@@ -1,8 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+ BD_modificaciontablas
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from datetime import timedelta
+=======
+ main
 
 class UsuarioSistema(AbstractUser):
     # 1. Definimos el Rol (Operador o Visualizador)
@@ -23,6 +26,7 @@ class UsuarioSistema(AbstractUser):
     def __str__(self):
         return self.username
 
+ BD_modificaciontablas
 class Carrera(models.Model):
     id_carrera = models.AutoField(primary_key=True)
     nombre_carrera = models.CharField(max_length=100)
@@ -30,6 +34,8 @@ class Carrera(models.Model):
     def __str__(self):
         return self.nombre_carrera
 
+=======
+ main
 class Persona(models.Model):
     id_persona = models.AutoField(primary_key=True)
     
@@ -46,6 +52,7 @@ class Persona(models.Model):
     apellidos = models.CharField(max_length=100)
 
     def __str__(self):
+ BD_modificaciontablas
         return f"{self.matricula or 'S/N'} {self.nombre} {self.apellidos}"
 
 
@@ -290,3 +297,6 @@ class Registro(models.Model):
 
     def __str__(self):
         return f"Registro {self.id_registro} - {self.modulo} ({self.fecha})"
+=======
+        return f"{self.matricula or 'S/N'} {self.nombre} {self.apellidos}"
+ main

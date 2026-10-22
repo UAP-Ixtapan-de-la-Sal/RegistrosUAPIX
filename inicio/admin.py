@@ -1,11 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-
-# MODIFICACIÓN: Importamos todos los nuevos modelos creados para la Sala de Cómputo
-from .models import (
-    UsuarioSistema, Persona, Carrera, Materia, 
-    Grupo, Clase, EventoTallerConferencia, Equipo, Registro, Externo
-)
+from .models import UsuarioSistema, Persona
 
 @admin.register(UsuarioSistema)
 class UsuarioSistemaAdmin(UserAdmin):
@@ -34,6 +29,7 @@ class UsuarioSistemaAdmin(UserAdmin):
 @admin.register(Persona)
 class PersonaAdmin(admin.ModelAdmin):
     list_display = ('matricula', 'nombre', 'apellidos', 'perfil')
+ BD_modificaciontablas
     search_fields = ('matricula', 'nombre', 'apellidos')
     list_filter = ('perfil',)
 
@@ -105,3 +101,6 @@ class RegistroAdmin(admin.ModelAdmin):
     
     # También le ponemos su barra de fechas para que Jaz pueda buscar rápido
     date_hierarchy = 'fecha'
+=======
+    search_fields = ('matricula', 'nombre', 'apellidos')
+ main
