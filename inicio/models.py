@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.utils import timezone
-
+from datetime import timedelta
 
 class UsuarioSistema(AbstractUser):
     # 1. Definimos el Rol (Operador o Visualizador)
@@ -12,7 +12,7 @@ class UsuarioSistema(AbstractUser):
     )
     rol = models.CharField(max_length=20, choices=ROLES, default='visualizador')
 
-    # 2. Reemplazamos los permisos del 'class Meta' por checkboxes reales
+    # 2. Checkboxes reales para módulos
     mod_sala_computo = models.BooleanField('Sala de Cómputo', default=False)
     mod_auto_acceso = models.BooleanField('Auto Acceso', default=False)
     mod_biblioteca = models.BooleanField('Biblioteca Digital', default=False)
@@ -23,15 +23,23 @@ class UsuarioSistema(AbstractUser):
     def __str__(self):
         return self.username
 
+class Carrera(models.Model):
+    id_carrera = models.AutoField(primary_key=True)
+    nombre_carrera = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.nombre_carrera
 
 class Persona(models.Model):
     id_persona = models.AutoField(primary_key=True)
-    id_carrera = models.IntegerField(null=True, blank=True)
+    
+    # CORRECCIÓN: Vinculamos formalmente a la tabla Carrera para evitar el número suelto
+    carrera = models.ForeignKey(Carrera, on_delete=models.SET_NULL, null=True, blank=True, db_column='id_carrera', verbose_name="Carrera")
+    
     perfil = models.CharField(max_length=50, choices=[
-        ('Admin', 'Admin'),
-        ('Doc', 'Doc'),
-        ('Alumno', 'Alumno'),
-        ('Ext', 'Ext')
+        ('Administrador', 'Administrador'),
+        ('Docente', 'Docente'),
+        ('Alumno', 'Alumno')
     ])
     matricula = models.CharField(max_length=20, unique=True, null=True, blank=True)
     nombre = models.CharField(max_length=100)
@@ -41,12 +49,6 @@ class Persona(models.Model):
         return f"{self.matricula or 'S/N'} {self.nombre} {self.apellidos}"
 
 
-# ==========================================
-# === NUEVAS TABLAS PARA EL MÓDULO SALA DE CÓMPUTO ===
-# ==========================================
-# ==========================================
-# === NUEVA TABLA: EXTERNOS (Punto 7) ===
-# ==========================================
 class Externo(models.Model):
     id_externo = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=100)
@@ -56,29 +58,23 @@ class Externo(models.Model):
     def __str__(self):
         return f"{self.nombre} {self.apellidos} (Externo)"
 
-class Carrera(models.Model):
-    id_carrera = models.AutoField(primary_key=True)
-    nombre_carrera = models.CharField(max_length=100)
 
-    def __str__(self):
-        return self.nombre_carrera
 
 class Materia(models.Model):
     id_materia = models.AutoField(primary_key=True)
     nombre_materia = models.CharField(max_length=100)
-    # Reemplazamos id_carrera por carrera. Django creará la columna carrera_id automáticamente en MariaDB.
-    carrera = models.ForeignKey(Carrera, on_delete=models.CASCADE, verbose_name="Carrera a la que pertenece")
+    carrera = models.ForeignKey(Carrera, on_delete=models.CASCADE, db_column='id_carrera', verbose_name="Carrera")
 
     def __str__(self):
         return self.nombre_materia
+
 
 class Grupo(models.Model):
     id_grupo = models.AutoField(primary_key=True)
     nombre_grupo = models.CharField(max_length=20)
     semestre = models.IntegerField()
     turno = models.CharField(max_length=20)
-    # Misma lógica: nombre limpio para la llave foránea
-    carrera = models.ForeignKey(Carrera, on_delete=models.CASCADE, verbose_name="Carrera")
+    carrera = models.ForeignKey(Carrera, on_delete=models.CASCADE, db_column='id_carrera', verbose_name="Carrera")
 
     def __str__(self):
         return f"{self.nombre_grupo} - Semestre {self.semestre} ({self.turno})"
@@ -86,38 +82,31 @@ class Grupo(models.Model):
 
 class Clase(models.Model):
     id_clase = models.AutoField(primary_key=True)
-    
-    # 1. MEJORA DE UX: Quitamos el 'id_' y ponemos etiquetas limpias
-    materia = models.ForeignKey(Materia, on_delete=models.CASCADE, verbose_name="Materia")
-    grupo = models.ForeignKey(Grupo, on_delete=models.CASCADE, verbose_name="Grupo")
-    docente = models.ForeignKey(Persona, on_delete=models.CASCADE, verbose_name="Docente a cargo")
+    materia = models.ForeignKey(Materia, on_delete=models.CASCADE, db_column='id_materia', verbose_name="Materia")
+    grupo = models.ForeignKey(Grupo, on_delete=models.CASCADE, db_column='id_grupo', verbose_name="Grupo")
+    docente = models.ForeignKey(Persona, on_delete=models.CASCADE, db_column='id_persona', verbose_name="Responsable a cargo")
     
     fecha = models.DateField()
     hora_inicio = models.TimeField()
     hora_fin = models.TimeField()
 
-    # 2. SEGURIDAD DE DATOS: Método clean() para validar las reglas de negocio
     def clean(self):
-        # Evitar errores si los campos están vacíos (Django ya los valida por ser obligatorios, 
-        # pero clean() corre antes, así que nos aseguramos de que tengan datos).
         if not self.fecha or not self.hora_inicio or not self.hora_fin:
             return
 
-        # Regla A: La fecha de la clase no puede ser en el pasado
         fecha_actual = timezone.now().date()
         if self.fecha < fecha_actual:
-            raise ValidationError({'fecha': 'Seguridad: No puedes agendar una clase en una fecha que ya pasó.'})
+            raise ValidationError({'fecha': 'Error: No puedes agendar una clase en una fecha pasada.'})
 
-        # Regla B: Si la clase es hoy, la hora de inicio no puede haber pasado ya
-        hora_actual = timezone.localtime().time()
-        if self.fecha == fecha_actual and self.hora_inicio < hora_actual:
-            raise ValidationError({'hora_inicio': 'Seguridad: La hora de inicio ya pasó en el día de hoy.'})
+        # Margen de tolerancia de 5 minutos
+        if self.fecha == fecha_actual:
+            hora_limite = (timezone.now() - timedelta(minutes=5)).time()
+            if self.hora_inicio < hora_limite:
+                raise ValidationError({'hora_inicio': 'Error: La hora de inicio ya pasó (fuera del margen de 5 minutos).'})
 
-        # Regla C: La hora de fin debe ser estrictamente posterior a la de inicio
         if self.hora_fin <= self.hora_inicio:
-            raise ValidationError({'hora_fin': 'Lógica: La hora de finalización debe ser después de la hora de inicio.'})
+            raise ValidationError({'hora_fin': 'Error: La hora de fin debe ser después del inicio.'})
 
-    # Sobrescribimos el método save() para forzar que clean() se ejecute siempre
     def save(self, *args, **kwargs):
         self.full_clean()
         super().save(*args, **kwargs)
@@ -125,15 +114,12 @@ class Clase(models.Model):
     def __str__(self):
         return f"Clase: {self.materia} - {self.grupo} ({self.fecha})"
 
-# ==========================================
-# === ACTUALIZACIÓN: EVENTOS (Punto 4) ===
-# ==========================================
+
 class EventoTallerConferencia(models.Model):
     TIPO_EVENTO_CHOICES = [
         ('Taller', 'Taller'),
         ('Conferencia', 'Conferencia'),
         ('Clase', 'Clase'),
-        
     ]
     TIPO_PONENTE_CHOICES = [
         ('Interno', 'Docente/Alumno del Plantel'),
@@ -141,11 +127,10 @@ class EventoTallerConferencia(models.Model):
     ]
 
     id_evento = models.AutoField(primary_key=True)
-    # Lista desplegable para tipo de evento
     tipo_evento = models.CharField(max_length=50, choices=TIPO_EVENTO_CHOICES, default='Taller')
     nombre_evento = models.CharField(max_length=100)
+    clase = models.ForeignKey(Clase, on_delete=models.SET_NULL, null=True, blank=True, db_column='id_clase', verbose_name="Clase vinculada")
     
-    # Lógica de separación Interno/Externo
     tipo_ponente = models.CharField(max_length=20, choices=TIPO_PONENTE_CHOICES, default='Interno')
     ponente_interno = models.ForeignKey(Persona, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Ponente Interno")
     ponente_externo = models.ForeignKey(Externo, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Ponente Externo")
@@ -153,58 +138,44 @@ class EventoTallerConferencia(models.Model):
     fecha = models.DateField()
     hora_inicio = models.TimeField()
     hora_fin = models.TimeField()
-    # Aclaración visual para el estado bloque
     estado_bloque = models.BooleanField("Bloquear horario", default=True, help_text="Si está activo, no se podrán asignar más actividades en este horario.")
 
-    # Validación de seguridad y lógica de negocio
-   # ==========================================
-    # === SISTEMA DE SEGURIDAD Y ANTI-CHOQUES ===
-    # ==========================================
     def clean(self):
-        # 1. Validación Lógica Básica
-        if self.hora_entrada and self.hora_salida:
-            if self.hora_salida <= self.hora_entrada:
-                raise ValidationError({'hora_salida': 'Error lógico: La hora de salida no puede ser antes o igual a la hora de entrada.'})
+        if not self.fecha or not self.hora_inicio or not self.hora_fin:
+            return
 
-        # 2. Lógica Anti-Choque de Equipos
-        if self.equipo:
-            # Buscamos todos los registros del MISMO equipo en la MISMA fecha
-            # .exclude(id_registro=self.id_registro) es vital por si estamos "editando" un registro, para que no choque consigo mismo.
-            registros_existentes = Registro.objects.filter(
-                equipo=self.equipo,
-                fecha=self.fecha
-            ).exclude(id_registro=self.id_registro)
+        fecha_actual = timezone.localtime().date()
+        if self.fecha < fecha_actual:
+            raise ValidationError({'fecha': 'Error: No puedes agendar un evento en una fecha pasada.'})
 
-            for reg in registros_existentes:
-                # CASO A: Alguien está usando la computadora ahorita mismo (No ha registrado salida)
-                if not reg.hora_salida:
-                    raise ValidationError({'equipo': f'Bloqueo: Este equipo está siendo ocupado actualmente por alguien más (Entró a las {reg.hora_entrada}).'})
+        if self.fecha == fecha_actual:
+            ahora_local = timezone.localtime()
+            hora_limite = (ahora_local - timedelta(minutes=5)).time()
+            if self.hora_inicio < hora_limite:
+                raise ValidationError({'hora_inicio': 'Error: La hora de inicio ya pasó.'})
 
-                # CASO B: Chocamos con un registro que ya terminó
-                if self.hora_salida:
-                    # Fórmula matemática de traslape: (Nuevo Inicio < Viejo Fin) Y (Nuevo Fin > Viejo Inicio)
-                    if self.hora_entrada < reg.hora_salida and self.hora_salida > reg.hora_entrada:
-                        raise ValidationError({'hora_entrada': f'Choque de horario: Este equipo ya fue utilizado de {reg.hora_entrada} a {reg.hora_salida}.'})
-                else:
-                    # CASO C: No le pusimos hora de salida (queda abierto), pero la entrada choca con algo previo
-                    if self.hora_entrada < reg.hora_salida:
-                        raise ValidationError({'hora_entrada': f'Choque de horario: La entrada interfiere con un registro previo de {reg.hora_entrada} a {reg.hora_salida}.'})
-
-    # Automatización de estados + Ejecución del Clean
-    def save(self, *args, **kwargs):
-        self.full_clean() # EJECUTAMOS EL FILTRO DE SEGURIDAD ANTES DE GUARDAR
-        super().save(*args, **kwargs)
+        if self.hora_fin <= self.hora_inicio:
+            raise ValidationError({'hora_fin': 'Error: La hora de fin debe ser después del inicio.'})
         
-        # Automatización de equipo
-        if self.equipo:
-            if self.hora_salida:
-                self.equipo.estado = 'Disponible'
-            else:
-                self.equipo.estado = 'Ocupado'
-            self.equipo.save()
+        # === NUEVA LÓGICA INTELIGENTE DE PONENTES ===
+        if self.tipo_ponente == 'Interno':
+            if not self.ponente_interno:
+                raise ValidationError({'ponente_interno': 'Seleccionaste tipo Interno. Debes elegir un Ponente Interno.'})
+            # Vaciamos el externo automáticamente para evitar choques de datos
+            self.ponente_externo = None 
+
+        elif self.tipo_ponente == 'Externo':
+            if not self.ponente_externo:
+                raise ValidationError({'ponente_externo': 'Seleccionaste tipo Externo. Debes elegir o agregar un Ponente Externo.'})
+            # Vaciamos el interno automáticamente
+            self.ponente_interno = None
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"Registro {self.id_registro} - {self.modulo} ({self.fecha})"
+        return self.nombre_evento
 
 
 class Equipo(models.Model):
@@ -225,7 +196,7 @@ class Equipo(models.Model):
         ('Malo', 'Malo')
     ]
 
-    id_equipo = models.AutoField(primary_key=True) # MODIFICACIÓN: Clave primaria explícita según diagrama
+    id_equipo = models.AutoField(primary_key=True)
     no_equipo = models.CharField(max_length=50)
     no_bien_patrimonial = models.CharField(max_length=100, unique=True, null=True, blank=True)
     lugar = models.CharField(max_length=50, choices=LUGAR_CHOICES)
@@ -270,21 +241,51 @@ class Registro(models.Model):
     registrado_por = models.ForeignKey(UsuarioSistema, on_delete=models.SET_NULL, null=True, blank=True)
     observaciones = models.TextField(null=True, blank=True)
 
-    # MODIFICACIÓN PUNTO 3: Automatización del estado del equipo
+    # SISTEMA ANTI-CHOQUES RESTAURADO
+    def clean(self):
+        if self.hora_entrada and self.hora_salida:
+            if self.hora_salida <= self.hora_entrada:
+                raise ValidationError({'hora_salida': 'Error lógico: La hora de salida no puede ser antes o igual a la hora de entrada.'})
+
+        if self.equipo:
+            registros_existentes = Registro.objects.filter(
+                equipo=self.equipo,
+                fecha=self.fecha
+            ).exclude(id_registro=self.id_registro)
+
+            for reg in registros_existentes:
+                if not reg.hora_salida:
+                    raise ValidationError({'equipo': f'Bloqueo: Este equipo está siendo ocupado actualmente (Entró a las {reg.hora_entrada}).'})
+
+                if self.hora_salida:
+                    if self.hora_entrada < reg.hora_salida and self.hora_salida > reg.hora_entrada:
+                        raise ValidationError({'hora_entrada': f'Choque de horario: Este equipo ya fue utilizado de {reg.hora_entrada} a {reg.hora_salida}.'})
+                else:
+                    if self.hora_entrada < reg.hora_salida:
+                        raise ValidationError({'hora_entrada': f'Choque de horario: La entrada interfiere con un registro previo de {reg.hora_entrada} a {reg.hora_salida}.'})
+        if self.equipo:
+            # Diccionario para empatar los valores del módulo con los del lugar del equipo
+            mapeo_lugares = {
+                'Sala_Computo': 'Sala',
+                'Auto_Acceso': 'Auto Acceso',
+                'Biblioteca': 'Biblioteca'
+            }
+            
+            lugar_correspondiente = mapeo_lugares.get(self.modulo)
+            
+            if self.equipo.lugar != lugar_correspondiente:
+                raise ValidationError({
+                    'equipo': f'Incongruencia: Seleccionaste el módulo {self.modulo}, pero este equipo pertenece a {self.equipo.lugar}.'
+                })
     def save(self, *args, **kwargs):
-        # Primero guardamos el registro para asegurarnos de que existe
+        self.full_clean()
         super().save(*args, **kwargs)
         
-        # Si este registro tiene una computadora asignada...
         if self.equipo:
             if self.hora_salida:
-                # Si ya le pusieron hora de salida, liberamos la PC
                 self.equipo.estado = 'Disponible'
             else:
-                # Si no tiene hora de salida, significa que la acaban de ocupar
                 self.equipo.estado = 'Ocupado'
-            
-            # Guardamos el nuevo estado de la computadora
             self.equipo.save()
 
     def __str__(self):

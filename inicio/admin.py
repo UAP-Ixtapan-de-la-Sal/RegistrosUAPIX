@@ -77,11 +77,11 @@ class ExternoAdmin(admin.ModelAdmin):
 
 @admin.register(EventoTallerConferencia)
 class EventoAdmin(admin.ModelAdmin):
-    list_display = ('nombre_evento', 'tipo_evento', 'tipo_ponente', 'fecha', 'hora_inicio', 'estado_bloque')
-    list_filter = ('tipo_evento', 'tipo_ponente', 'fecha', 'estado_bloque')
+    # Agregamos 'clase' a la lista para que Jaz lo vea de inmediato en el panel
+    list_display = ('nombre_evento', 'tipo_evento', 'tipo_ponente', 'clase', 'fecha', 'hora_inicio', 'estado_bloque')
+    list_filter = ('tipo_evento', 'tipo_ponente', 'clase', 'fecha', 'estado_bloque')
     search_fields = ('nombre_evento',)
-    date_hierarchy = 'fecha' # Agregamos la barra de fechas también aquí
-
+    date_hierarchy = 'fecha'
 
 # =======================================================
 # === NUEVO APARTADO: EQUIPOS Y REGISTROS (SALA CÓMPUTO) ===
