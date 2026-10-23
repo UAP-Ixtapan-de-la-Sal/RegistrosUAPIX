@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
+from simple_history.admin import SimpleHistoryAdmin
 
 # MODIFICACIÓN: Importamos todos los nuevos modelos creados para la Sala de Cómputo
 from .models import (
@@ -76,7 +77,7 @@ class ExternoAdmin(admin.ModelAdmin):
     search_fields = ('nombre', 'apellidos')
 
 @admin.register(EventoTallerConferencia)
-class EventoAdmin(admin.ModelAdmin):
+class EventoAdmin(SimpleHistoryAdmin):
     # Agregamos 'clase' a la lista para que Jaz lo vea de inmediato en el panel
     list_display = ('nombre_evento', 'tipo_evento', 'tipo_ponente', 'clase', 'fecha', 'hora_inicio', 'estado_bloque')
     list_filter = ('tipo_evento', 'tipo_ponente', 'clase', 'fecha', 'estado_bloque')
@@ -88,13 +89,13 @@ class EventoAdmin(admin.ModelAdmin):
 # =======================================================
 
 @admin.register(Equipo)
-class EquipoAdmin(admin.ModelAdmin):
+class EquipoAdmin(SimpleHistoryAdmin):
     list_display = ('no_equipo', 'no_bien_patrimonial', 'lugar', 'estado', 'condicion')
     list_filter = ('lugar', 'estado', 'condicion')
     search_fields = ('no_equipo', 'no_bien_patrimonial')
 
 @admin.register(Registro)
-class RegistroAdmin(admin.ModelAdmin):
+class RegistroAdmin(SimpleHistoryAdmin):
     # Actualizamos los nombres de las columnas (quitamos los id_) y agregamos hora_entrada
     list_display = ('id_registro', 'fecha', 'hora_entrada', 'hora_salida', 'modulo', 'tipo_registro', 'persona', 'equipo')
     

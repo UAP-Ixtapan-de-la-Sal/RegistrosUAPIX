@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from datetime import timedelta
+from simple_history.models import HistoricalRecords
 
 class UsuarioSistema(AbstractUser):
     # 1. Definimos el Rol (Operador o Visualizador)
@@ -139,7 +140,8 @@ class EventoTallerConferencia(models.Model):
     hora_inicio = models.TimeField()
     hora_fin = models.TimeField()
     estado_bloque = models.BooleanField("Bloquear horario", default=True, help_text="Si está activo, no se podrán asignar más actividades en este horario.")
-
+    history = HistoricalRecords()  # Para el historial de cambios
+    
     def clean(self):
         if not self.fecha or not self.hora_inicio or not self.hora_fin:
             return
@@ -203,6 +205,7 @@ class Equipo(models.Model):
     estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default='Disponible')
     condicion = models.CharField(max_length=20, choices=CONDICION_CHOICES, default='Bueno')
     observaciones = models.TextField(null=True, blank=True)
+    history = HistoricalRecords()  # Para el historial de cambios
 
     def __str__(self):
         return f"Eq: {self.no_equipo} ({self.lugar})"
@@ -240,6 +243,7 @@ class Registro(models.Model):
     evento = models.ForeignKey(EventoTallerConferencia, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Evento asignado")
     registrado_por = models.ForeignKey(UsuarioSistema, on_delete=models.SET_NULL, null=True, blank=True)
     observaciones = models.TextField(null=True, blank=True)
+    history = HistoricalRecords()  # Para el historial de cambios
 
     # SISTEMA ANTI-CHOQUES RESTAURADO
     def clean(self):
