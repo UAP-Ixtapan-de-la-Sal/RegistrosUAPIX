@@ -106,15 +106,12 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# ==========================================
-# === MODIFICACIÓN: IDIOMA Y ZONA HORARIA ===
-# ==========================================
 # Internationalization
 # https://docs.djangoproject.com/en/6.1/topics/i18n/
 
-LANGUAGE_CODE = 'es-mx'  # Cambiado a Español de México
+LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'America/Mexico_City'  # Cambiado a la hora del centro de México
+TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
@@ -124,7 +121,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Email
@@ -161,7 +158,7 @@ JAZZMIN_SETTINGS = {
     "welcome_sign": "Bienvenido al Sistema de Gestión UAPIX",
 
     # Copyright al pie de página
-    "copyright": " - Registros UAPIX",
+    "copyright": "TESVG - Registros UAPIX",
 
     # Habilitar barra lateral y menú desplegable limpio
     "show_sidebar": True,

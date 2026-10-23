@@ -8,6 +8,8 @@ from .models import (
     Grupo, Clase, EventoTallerConferencia, Equipo, Registro, Externo
 )
 
+from .models import UsuarioSistema, Persona
+
 @admin.register(UsuarioSistema)
 class UsuarioSistemaAdmin(UserAdmin):
     # 1. Las columnas que verás en la tabla principal del panel
@@ -35,6 +37,7 @@ class UsuarioSistemaAdmin(UserAdmin):
 @admin.register(Persona)
 class PersonaAdmin(admin.ModelAdmin):
     list_display = ('matricula', 'nombre', 'apellidos', 'perfil')
+
     search_fields = ('matricula', 'nombre', 'apellidos')
     list_filter = ('perfil',)
 
@@ -106,3 +109,4 @@ class RegistroAdmin(SimpleHistoryAdmin):
     
     # También le ponemos su barra de fechas para que Jaz pueda buscar rápido
     date_hierarchy = 'fecha'
+    search_fields = ('matricula', 'nombre', 'apellidos')
