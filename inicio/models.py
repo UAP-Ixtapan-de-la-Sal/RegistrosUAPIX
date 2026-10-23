@@ -1,9 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.core.exceptions import ValidationError
-from django.utils import timezone
-from datetime import timedelta
-from simple_history.models import HistoricalRecords
 
 class UsuarioSistema(AbstractUser):
     # 1. Definimos el Rol (Operador o Visualizador)
@@ -13,7 +9,7 @@ class UsuarioSistema(AbstractUser):
     )
     rol = models.CharField(max_length=20, choices=ROLES, default='visualizador')
 
-    # 2. Checkboxes reales para módulos
+    # 2. Reemplazamos los permisos del 'class Meta' por checkboxes reales
     mod_sala_computo = models.BooleanField('Sala de Cómputo', default=False)
     mod_auto_acceso = models.BooleanField('Auto Acceso', default=False)
     mod_biblioteca = models.BooleanField('Biblioteca Digital', default=False)
@@ -24,29 +20,21 @@ class UsuarioSistema(AbstractUser):
     def __str__(self):
         return self.username
 
-class Carrera(models.Model):
-    id_carrera = models.AutoField(primary_key=True)
-    nombre_carrera = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.nombre_carrera
-
 class Persona(models.Model):
     id_persona = models.AutoField(primary_key=True)
-    
-    # CORRECCIÓN: Vinculamos formalmente a la tabla Carrera para evitar el número suelto
-    carrera = models.ForeignKey(Carrera, on_delete=models.SET_NULL, null=True, blank=True, db_column='id_carrera', verbose_name="Carrera")
-    
+    id_carrera = models.IntegerField(null=True, blank=True)
     perfil = models.CharField(max_length=50, choices=[
-        ('Administrador', 'Administrador'),
-        ('Docente', 'Docente'),
-        ('Alumno', 'Alumno')
+        ('Admin', 'Admin'),
+        ('Doc', 'Doc'),
+        ('Alumno', 'Alumno'),
+        ('Ext', 'Ext')
     ])
     matricula = models.CharField(max_length=20, unique=True, null=True, blank=True)
     nombre = models.CharField(max_length=100)
     apellidos = models.CharField(max_length=100)
 
     def __str__(self):
+
         return f"{self.matricula or 'S/N'} {self.nombre} {self.apellidos}"
 
 
@@ -293,4 +281,5 @@ class Registro(models.Model):
             self.equipo.save()
 #CHIDO PERRON
     def __str__(self):
-        return f"Registro {self.id_registro} - {self.modulo} ({self.fecha})"
+
+        return f"{self.matricula or 'S/N'} {self.nombre} {self.apellidos}"
