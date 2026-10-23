@@ -291,6 +291,6 @@ class Registro(models.Model):
             else:
                 self.equipo.estado = 'Ocupado'
             self.equipo.save()
-
+#CHIDO PERRON
     def __str__(self):
         return f"Registro {self.id_registro} - {self.modulo} ({self.fecha})"
