@@ -24,6 +24,7 @@ class UsuarioSistema(AbstractUser):
     def __str__(self):
         return self.username
 
+#TABLA CLASE 
 class Carrera(models.Model):
     id_carrera = models.AutoField(primary_key=True)
     nombre_carrera = models.CharField(max_length=100)
