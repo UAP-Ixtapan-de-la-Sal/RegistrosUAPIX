@@ -20,6 +20,14 @@ class UsuarioSistema(AbstractUser):
     def __str__(self):
         return self.username
 
+#TABLA CLASE 
+class Carrera(models.Model):
+    id_carrera = models.AutoField(primary_key=True)
+    nombre_carrera = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.nombre_carrera
+
 class Persona(models.Model):
     id_persona = models.AutoField(primary_key=True)
     id_carrera = models.IntegerField(null=True, blank=True)
