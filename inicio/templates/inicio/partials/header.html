@@ -1,6 +1,12 @@
 {% load static %}
 <header class="institutional-header">
-    <div style="font-weight: 700; font-size: 1.1rem; color: #fff;">PORTAL DE GESTIÓN UAPIX</div>
+    <div style="font-weight: 700; font-size: 1.1rem; color: #fff;">
+        {% if request.resolver_match.url_name == 'sala_computo' %}
+            PANEL OPERATIVO
+        {% else %}
+            PORTAL DE GESTIÓN UAPIX
+        {% endif %}
+    </div>
     
     <div class="user-links" style="display: flex; gap: 16px; align-items: center; position: relative;">
         <!-- Menú desplegable limpio solo para el Superusuario -->

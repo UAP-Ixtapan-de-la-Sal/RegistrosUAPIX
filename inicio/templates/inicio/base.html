@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="{% static 'inicio/css/estilos.css' %}?v=20261019-3">
     {% block extra_css %}{% endblock %}
 </head>
-<body>
+<body class="{% block body_class %}{% endblock %}">
 
     <!-- Incluir el Header -->
     {% include 'inicio/partials/header.html' %}
