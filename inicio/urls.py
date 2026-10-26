@@ -9,7 +9,7 @@ urlpatterns = [
     path('', views.login_view, name='login'),
     path('homePage/', views.homePage, name='homePage'),
     path('agregar-usuario/', views.agregar_usuario_view, name='agregar_usuario'),
-    path('auditoria-reportes/', views.auditoria_reportes_view, name='auditoria_reportes'),
-    path('respaldos-bd/', views.respaldos_bd_view, name='respaldos_bd'),
+    path('exportar-auditoria/', views.exportar_auditoria_excel, name='exportar_auditoria'),
+    # Ruta obligatoria para que el botón de cerrar sesión funcione
     path('logout/', views.logout_view, name='logout'),
 ]
