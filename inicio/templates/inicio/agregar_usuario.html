@@ -1,155 +1,191 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <title>Agregar Nuevo Usuario</title>
-    <style>
-        body { 
-            background: #f3f6fb; 
-            font-family: Arial, sans-serif; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
-            margin: 0; 
-        }
-        .card { 
-            background: #fff; 
-            width: 700px; 
-            padding: 30px; 
-            border: 1px solid #ccc; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
-            position: relative; 
-        }
-        .btn-cerrar { 
-            position: absolute; 
-            top: 20px; 
-            right: 20px; 
-            border: 1px solid #000; 
-            background: #fff; 
-            font-weight: bold; 
-            cursor: pointer; 
-            padding: 2px 6px; 
-            text-decoration: none;
-            color: #000;
-        }
-        h2 { 
-            text-align: center; 
-            margin-top: 0; 
-            font-size: 1.2rem;
-            text-transform: uppercase;
-        }
-        hr { border: 0; border-top: 1px solid #ccc; margin: 20px 0; }
-        
-        .form-grid { 
-            display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            gap: 40px; 
-        }
-        .col-left, .col-right { display: flex; flex-direction: column; gap: 15px; }
-        
-        label { font-weight: bold; font-size: 0.9rem; color: #333; display: flex; align-items: center; gap: 5px; }
-        input[type="text"], input[type="password"], select { 
-            width: 100%; 
-            padding: 8px; 
-            border: 1px solid #999; 
-        }
-        
-        .modulos-grid { 
-            display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            gap: 15px; 
-            margin-top: 10px; 
-        }
-        .checkbox-item { 
-            display: flex; 
-            align-items: center; 
-            gap: 8px; 
-            font-size: 0.85rem; 
-            color: #555; 
-        }
-        
-        .btn-submit { 
-            display: block; 
-            margin: 30px auto 0; 
-            padding: 10px 40px; 
-            background: #fff; 
-            border: 1px solid #000; 
-            font-weight: bold; 
-            font-size: 1rem; 
-            cursor: pointer; 
-            text-transform: uppercase;
-        }
-        .btn-submit:hover { background: #eee; }
-
-        .admin-link-container {
-            text-align: center;
-            margin-top: 20px;
-        }
-        .admin-link {
-            color: #17365d;
-            text-decoration: none;
-            font-size: 0.85rem;
-            font-weight: bold;
-        }
-        .admin-link:hover { text-decoration: underline; }
-    </style>
+    
+    <!-- Enlazamos tu archivo de estilos globales -->
+    <link rel="stylesheet" href="{% static 'inicio/css/estilos.css' %}">
 </head>
-<body>
+<body class="add-user-view">
 
-    <div class="card">
-        <!-- El botón X de la esquina superior regresa al homePage -->
-        <a href="{% url 'homePage' %}" class="btn-cerrar">X</a>
-        
-        <h2>Agregar Nuevo Usuario</h2>
-        <hr>
+    <!-- Header -->
+    {% include 'inicio/partials/header.html' %}
 
-        <!-- El formulario usa el método POST para enviar datos de forma segura -->
-        <form method="POST">
-            {% csrf_token %}
+    <div class="center-wrapper">
+        <div class="card">
+            <a href="{% url 'homePage' %}" class="btn-cerrar" title="Cerrar">✕</a>
             
-            <div class="form-grid">
-                <!-- Columna Izquierda: Credenciales -->
-                <div class="col-left">
-                    <div>
-                        <label>👤 Nombre de Usuario:</label>
-                        {{ form.username }}
+            <h2>Agregar Nuevo Usuario</h2>
+
+            <!-- Bloque para mostrar mensajes de éxito/error de Django -->
+            {% if messages %}
+                <div class="messages-container">
+                    {% for message in messages %}
+                        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-success{% endif %}">
+                            ✓ {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            
+            <form method="POST">
+                {% csrf_token %}
+                
+                <div class="form-grid">
+                    
+                    <!-- CAJA 1: CREDENCIALES (Centrada y organizada) -->
+                    <div class="section-box">
+                        <div class="section-title">👤 Datos de Acceso</div>
+                        
+                        <div class="input-group">
+                            <div class="input-box">
+                                <label>Nombre de Usuario</label>
+                                {{ form.username }}
+                            </div>
+
+                            <div class="input-box">
+                                <label>Contraseña</label>
+                                <div class="password-wrapper">
+                                    {{ form.password }}
+                                    <!-- Ojito de contraseña -->
+                                    <span class="toggle-password" id="togglePassword" title="Mostrar contraseña">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="input-box">
+                                <label>Tipo de Rol</label>
+                                {{ form.rol }}
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <label>🔒 Contraseña:</label>
-                        {{ form.password }}
+
+                    <!-- CAJA 2: MÓDULOS (Centrada y organizada) -->
+                    <div class="section-box">
+                        <div class="section-title">⚙️ Asignación de Módulos</div>
+                        
+                        <div class="modules-grid">
+                            <label class="checkbox-card">
+                                {{ form.mod_sala_computo }}
+                                <span>Sala de Cómputo</span>
+                            </label>
+                            <label class="checkbox-card">
+                                {{ form.mod_prestamos }}
+                                <span>Préstamos / Devolución</span>
+                            </label>
+                            <label class="checkbox-card">
+                                {{ form.mod_auto_acceso }}
+                                <span>Auto Acceso</span>
+                            </label>
+                            <label class="checkbox-card">
+                                {{ form.mod_insumos }}
+                                <span>Control Insumos</span>
+                            </label>
+                            <label class="checkbox-card">
+                                {{ form.mod_biblioteca }}
+                                <span>Biblioteca Digital</span>
+                            </label>
+                            <label class="checkbox-card">
+                                {{ form.mod_tecnologicos }}
+                                <span>Insumos Tecn.</span>
+                            </label>
+                        </div>
                     </div>
-                    <div>
-                        <label>⚙️ Tipo de Rol:</label>
-                        {{ form.rol }}
-                    </div>
+
                 </div>
 
-                <!-- Columna Derecha: Asignación de Módulos -->
-                <div class="col-right">
-                    <label>ASIGNAR MODULOS</label>
-                    <div class="modulos-grid">
-                        <div class="checkbox-item">{{ form.mod_sala_computo }} Sala de Cómputo</div>
-                        <div class="checkbox-item">{{ form.mod_prestamos }} Préstamos y Devolución</div>
-                        <div class="checkbox-item">{{ form.mod_auto_acceso }} Auto Acceso</div>
-                        <div class="checkbox-item">{{ form.mod_insumos }} Control de Insumos</div>
-                        <div class="checkbox-item">{{ form.mod_biblioteca }} Biblioteca Digital</div>
-                        <div class="checkbox-item">{{ form.mod_tecnologicos }} Insumos Tecnológicos</div>
-                    </div>
+                <hr>
+
+                <!-- Botones Finales -->
+                <div class="form-actions">
+                    <button type="submit" class="btn-submit">Registrar Usuario</button>
+                    <a href="{% url 'admin:index' %}" class="admin-link" target="_blank">
+                        Ir al Panel de Administración Avanzado <span>→</span>
+                    </a>
                 </div>
-            </div>
+            </form>
 
-            <hr>
-            <button type="submit" class="btn-submit">Agregar</button>
-        </form>
-
-        <!-- Enlace directo al panel azul de Django -->
-        <div class="admin-link-container">
-            <a href="{% url 'admin:index' %}" class="admin-link" target="_blank">
-                Ir al Panel de Administración Avanzado (Modificar/Eliminar) ➜
-            </a>
         </div>
     </div>
+
+    <!-- Footer -->
+    {% include 'inicio/partials/footer.html' %}
+
+    <!-- Script para hacer funcionar el ojito, validación de letras y validación de envío -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 1. Funcionalidad del ojito de contraseña
+            const togglePassword = document.getElementById('togglePassword');
+            const passwordInput = document.querySelector('input[name="password"]');
+
+            if (togglePassword && passwordInput) {
+                togglePassword.addEventListener('click', function () {
+                    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordInput.setAttribute('type', type);
+                    this.style.color = type === 'text' ? 'var(--color-green)' : '#94a3b8';
+                });
+            }
+
+            // 2. Validación de solo letras en el Nombre de Usuario
+            const usernameInput = document.querySelector('input[name="username"]');
+            if (usernameInput) {
+                usernameInput.addEventListener('input', function() {
+                    this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+                });
+            }
+
+            // 3. Validación al enviar el formulario (Rol y Módulos) con Tooltip Nativo
+            const form = document.querySelector('form');
+            const rolSelect = document.querySelector('select[name="rol"]');
+            const checkboxes = document.querySelectorAll('.modules-grid input[type="checkbox"]');
+            
+            // Limpiar el error del select cuando el usuario elija una opción
+            if (rolSelect) {
+                rolSelect.addEventListener('change', function() {
+                    this.setCustomValidity('');
+                });
+            }
+
+            // Limpiar el error de los checkboxes cuando el usuario marque al menos uno
+            checkboxes.forEach(cb => {
+                cb.addEventListener('change', function() {
+                    if (document.querySelectorAll('.modules-grid input[type="checkbox"]:checked').length > 0) {
+                        // Limpiamos el mensaje en el primer checkbox
+                        checkboxes[0].setCustomValidity('');
+                    }
+                });
+            });
+
+            if (form) {
+                form.addEventListener('submit', function(event) {
+                    // --- Validar Rol ---
+                    if (rolSelect && rolSelect.value === "") {
+                        event.preventDefault();
+                        rolSelect.setCustomValidity("Por favor, selecciona un Tipo de Rol.");
+                        rolSelect.reportValidity(); // Muestra el tooltip
+                        return;
+                    }
+
+                    // --- Validar Módulos ---
+                    const checkboxesMarcados = document.querySelectorAll('.modules-grid input[type="checkbox"]:checked');
+                    if (checkboxesMarcados.length === 0 && checkboxes.length > 0) {
+                        event.preventDefault();
+                        // Asignamos el error al primer checkbox para que el globo aparezca ahí
+                        const primerCheckbox = checkboxes[0];
+                        primerCheckbox.setCustomValidity("Por favor, selecciona al menos un módulo a asignar.");
+                        primerCheckbox.reportValidity(); // Muestra el tooltip
+                        return;
+                    }
+                });
+            }
+        });
+    </script>
 
 </body>
 </html>
