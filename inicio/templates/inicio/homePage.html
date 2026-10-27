@@ -40,7 +40,7 @@
         <!-- Bento Grid con tus permisos y nuevos iconos profesionales -->
         <div class="bento-grid">
             {% if request.user.mod_sala_computo or request.user.is_superuser %}
-                <a class="bento-card" href="#">
+                <a class="bento-card" href="{% url 'sala_computo' %}">
                     <div class="card-icon-slot">
                         <i class="fa-solid fa-desktop"></i>
                     </div>

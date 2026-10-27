@@ -1,4 +1,7 @@
 /* ==========================================================================
+   Estilos generales del sitio: variables, estructura y vistas compartidas.
+   La vista de Sala de Cómputo y el formulario de agendar clase/evento están
+   en inicio/static/inicio/css/modulos.css.
    1. VARIABLES GLOBALES Y CONFIGURACIÓN BÁSICA
    ========================================================================== */
 :root {
@@ -1005,14 +1008,14 @@ body {
 }
 
 .btn-action-audit {
-transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+transition: background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .btn-action-audit:hover {
 background-color: #d4af37;
 color: #3b2a00;
 box-shadow: 0 0 12px rgba(212, 175, 55, 0.7);
-animation: audit-gold-glow 0.8s ease-in-out infinite alternate;
+animation: audit-gold-glow 0.4s ease-in-out infinite alternate;
 }
 
  @keyframes audit-gold-glow {

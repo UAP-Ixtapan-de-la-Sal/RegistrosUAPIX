@@ -16,7 +16,7 @@
 
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="{% static 'inicio/css/estilos.css' %}?v=20261020-7">
+    <link rel="stylesheet" href="{% static 'inicio/css/estilos.css' %}?v=20261022-1">
 </head>
 <body class="audit-body">
 
@@ -42,8 +42,8 @@
             <!-- Filtros de Búsqueda -->
             <div class="filters-row">
                 <div class="filter-group">
-                    <label>Módulo:</label>
-                    <select class="audit-select">
+                    <label for="moduloFiltro">Módulo:</label>
+                    <select class="audit-select" id="moduloFiltro">
                         <option>Todos los Módulos</option>
                         <option>Sala de Cómputo</option>
                         <option>Biblioteca</option>
@@ -52,32 +52,37 @@
                         <option>Préstamos y Devolución</option>
                     </select>
                 </div>
-               <div class="filter-group date-filter-container">
-    <label>FECHA:</label>
-    
-    <!-- Input que muestra el rango seleccionado y abre el panel al hacer clic -->
-                <div class="input-calendar-wrapper" id="datePickerToggle">
-                <input type="text" id="rangoFechasDisplay" class="audit-input" placeholder="Selecciona un rango" readonly>
-                <i class="fa-solid fa-magnifying-glass-chart calendar-icon-trigger"></i>
+                <div class="filter-group">
+                    <label for="accionFiltro">Acción:</label>
+                    <select class="audit-select" id="accionFiltro">
+                        <option>Todas las acciones</option>
+                        <option>Crear</option>
+                        <option>Editar</option>
+                        <option>Eliminar</option>
+                        <option>Consultar</option>
+                    </select>
                 </div>
+                <div class="filter-group date-filter-container">
+                    <label for="rangoFechasDisplay">Rango de fechas:</label>
+                    <div class="input-calendar-wrapper" id="datePickerToggle">
+                        <input type="text" id="rangoFechasDisplay" class="audit-input" placeholder="Selecciona un rango" readonly>
+                        <i class="fa-solid fa-magnifying-glass-chart calendar-icon-trigger"></i>
+                    </div>
 
-    <!-- Panel flotante -->
-                <div class="date-dropdown-panel is-hidden" id="dateDropdownPanel">
-        <!-- Columna izquierda: Opciones rápidas -->
-                <div class="date-quick-options">
-                <button type="button" class="quick-option-btn" onclick="seleccionarFiltroRapido('hoy')">Hoy</button>
-                <button type="button" class="quick-option-btn" onclick="seleccionarFiltroRapido('ayer')">Ayer</button>
-                <button type="button" class="quick-option-btn" onclick="seleccionarFiltroRapido('ultimos7')">Últimos 7 días</button>
-                <button type="button" class="quick-option-btn" onclick="seleccionarFiltroRapido('semana')">Esta semana</button>
-                <button type="button" class="quick-option-btn active" onclick="seleccionarFiltroRapido('personalizado')">Personalizar Rango</button>
+                    <div class="date-dropdown-panel is-hidden" id="dateDropdownPanel">
+                        <div class="date-quick-options">
+                            <button type="button" class="quick-option-btn" onclick="seleccionarFiltroRapido('hoy')">Hoy</button>
+                            <button type="button" class="quick-option-btn" onclick="seleccionarFiltroRapido('ayer')">Ayer</button>
+                            <button type="button" class="quick-option-btn" onclick="seleccionarFiltroRapido('ultimos7')">Últimos 7 días</button>
+                            <button type="button" class="quick-option-btn" onclick="seleccionarFiltroRapido('semana')">Esta semana</button>
+                            <button type="button" class="quick-option-btn active" onclick="seleccionarFiltroRapido('personalizado')">Personalizar rango</button>
+                        </div>
+
+                        <div class="date-calendar-view" id="flatpickrInlineContainer"></div>
+                    </div>
                 </div>
-
-        <!-- Columna derecha: El calendario doble -->
-                 <div class="date-calendar-view" id="flatpickrInlineContainer"></div>
-             </div>
-</div>
                 <div class="filter-actions">
-                    <button class="btn-action-audit">Filtrar</button>
+                    <button type="button" class="btn-action-audit">Filtrar</button>
                 </div>
             </div>
 
